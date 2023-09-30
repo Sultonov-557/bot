@@ -15,10 +15,18 @@ console.log("Bot is running");
 const bot = new grammy_1.Bot(env_config_1.env.BOT_TOKEN);
 bot.start();
 bot.hears("tell me joke", (ctx) => __awaiter(void 0, void 0, void 0, function* () {
-    const req = yield fetch("https://api.api-ninjas.com/v1/jokes", { headers: { "X-Api-Key": env_config_1.env.NINJAS_API_KEY } });
+    const req = yield fetch("https://api.api-ninjas.com/v1/jokes", {
+        headers: { "X-Api-Key": env_config_1.env.NINJAS_API_KEY },
+    });
     const res = yield req.json();
     ctx.reply(res[0].joke);
 }));
-bot.hears(/\/echo (.+)/, (ctx) => {
-    console.log(ctx.match[1]);
-});
+bot.hears(/\weather (.+)/i, (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    const req = yield fetch(`https://api.api-ninjas.com/v1/weather?city=${ctx.match[1]}`, {
+        headers: { "X-Api-Key": env_config_1.env.NINJAS_API_KEY },
+    });
+    const res = yield req.json();
+    const output = `\ntempratura: ${res.temp}\
+                    \nshamol tezligi: ${res.wind_speed}`;
+    ctx.reply(output);
+}));
